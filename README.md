@@ -599,6 +599,492 @@ MIT License
 * AR/VR avatar support
 
 
+# Running the Enterprise AI Avatar Translator in Visual Studio Code
+
+This guide explains how to run the Enterprise AI Avatar Translator project locally using Visual Studio Code.
+
+---
+
+# Prerequisites
+
+Install the following software before starting.
+
+## Node.js
+
+Download and install Node.js (version 20 or later).
+
+```bash
+node -v
+npm -v
+```
+
+Expected output:
+
+```bash
+v20.x.x
+10.x.x
+```
+
+---
+
+## Git
+
+Verify Git installation:
+
+```bash
+git --version
+```
+
+Expected output:
+
+```bash
+git version 2.x.x
+```
+
+---
+
+## Visual Studio Code
+
+Recommended extensions:
+
+* ESLint
+* Prettier
+* Docker
+* GitHub Copilot
+* Tailwind CSS IntelliSense
+* PostgreSQL
+* REST Client
+
+---
+
+# Project Structure
+
+```text
+enterprise-avatar-translator/
+
+├── frontend/
+├── backend/
+├── docker-compose.yml
+├── README.md
+└── .env.example
+```
+
+---
+
+# Clone Repository
+
+```bash
+git clone https://github.com/your-org/enterprise-avatar-translator.git
+
+cd enterprise-avatar-translator
+```
+
+---
+
+# Open Project in VS Code
+
+```bash
+code .
+```
+
+Or:
+
+1. Open Visual Studio Code
+2. Select **File → Open Folder**
+3. Choose the project folder
+
+---
+
+# Install Frontend Dependencies
+
+Open a terminal in VS Code:
+
+```bash
+cd frontend
+
+npm install
+```
+
+This will create:
+
+```text
+node_modules/
+package-lock.json
+```
+
+---
+
+# Install Backend Dependencies
+
+Open another terminal:
+
+```bash
+cd backend
+
+npm install
+```
+
+---
+
+# Configure Environment Variables
+
+Create:
+
+```text
+backend/.env
+```
+
+Example:
+
+```env
+PORT=5000
+
+OPENAI_API_KEY=YOUR_OPENAI_KEY
+
+DEEPL_API_KEY=YOUR_DEEPL_KEY
+
+AZURE_SPEECH_KEY=YOUR_AZURE_KEY
+
+AZURE_REGION=eastus
+
+DATABASE_URL=postgresql://postgres:password@localhost:5432/avatar
+
+REDIS_URL=redis://localhost:6379
+```
+
+---
+
+# Start PostgreSQL
+
+## Option 1: Docker
+
+Run PostgreSQL container:
+
+```bash
+docker run \
+-d \
+--name postgres \
+-e POSTGRES_PASSWORD=password \
+-e POSTGRES_DB=avatar \
+-p 5432:5432 \
+postgres:16
+```
+
+Verify:
+
+```bash
+docker ps
+```
+
+---
+
+# Start Redis
+
+Run Redis container:
+
+```bash
+docker run \
+-d \
+--name redis \
+-p 6379:6379 \
+redis:7
+```
+
+Verify:
+
+```bash
+docker ps
+```
+
+---
+
+# Start Backend Service
+
+Open Terminal #1:
+
+```bash
+cd backend
+
+npm run dev
+```
+
+Expected:
+
+```text
+API running on port 5000
+```
+
+Backend URL:
+
+```text
+http://localhost:5000
+```
+
+---
+
+# Start Frontend Service
+
+Open Terminal #2:
+
+```bash
+cd frontend
+
+npm run dev
+```
+
+Expected:
+
+```text
+Local: http://localhost:3000
+```
+
+Frontend URL:
+
+```text
+http://localhost:3000
+```
+
+---
+
+# Running with Docker Compose
+
+If the project includes Docker Compose support:
+
+```bash
+docker compose up --build
+```
+
+Expected containers:
+
+```text
+frontend
+backend
+postgres
+redis
+```
+
+---
+
+# Service URLs
+
+## Frontend
+
+```text
+http://localhost:3000
+```
+
+## Backend API
+
+```text
+http://localhost:5000
+```
+
+## Swagger Documentation
+
+```text
+http://localhost:5000/api/docs
+```
+
+## Grafana Dashboard
+
+```text
+http://localhost:3001
+```
+
+## Prometheus
+
+```text
+http://localhost:9090
+```
+
+---
+
+# Recommended Startup Order
+
+For the complete enterprise deployment:
+
+```text
+1. PostgreSQL
+2. Redis
+3. Kafka
+4. Backend API
+5. Worker Service
+6. Frontend
+7. Nginx Gateway
+```
+
+Example:
+
+```bash
+docker compose up -d postgres redis kafka
+
+npm run start:api
+
+npm run start:worker
+
+npm run start:web
+```
+
+---
+
+# Troubleshooting
+
+## Port Already in Use
+
+Check running process:
+
+```bash
+netstat -ano | findstr 3000
+```
+
+Kill process:
+
+```bash
+taskkill /PID <PID> /F
+```
+
+---
+
+## Cannot Find Module
+
+Reinstall dependencies:
+
+```bash
+npm install
+```
+
+---
+
+## Frontend Fails to Start
+
+Delete dependencies:
+
+```bash
+rm -rf node_modules
+rm package-lock.json
+```
+
+Install again:
+
+```bash
+npm install
+```
+
+---
+
+## Backend Cannot Connect to PostgreSQL
+
+Verify PostgreSQL container:
+
+```bash
+docker ps
+```
+
+Check logs:
+
+```bash
+docker logs postgres
+```
+
+---
+
+## Backend Cannot Connect to Redis
+
+Verify Redis container:
+
+```bash
+docker ps
+```
+
+Check logs:
+
+```bash
+docker logs redis
+```
+
+---
+
+## Avatar Not Visible
+
+Verify avatar files exist:
+
+```text
+public/avatars/
+
+male.glb
+female.glb
+doctor.glb
+teacher.glb
+```
+
+---
+
+# Development Workflow
+
+```text
+Code Changes
+     │
+     ▼
+Git Commit
+     │
+     ▼
+Pull Request
+     │
+     ▼
+CI Pipeline
+     │
+     ▼
+Tests
+     │
+     ▼
+Docker Build
+     │
+     ▼
+Deploy
+```
+
+---
+
+# Production Deployment
+
+Recommended environments:
+
+* Docker
+* Kubernetes
+* AWS EKS
+* Azure AKS
+* Google GKE
+
+Recommended infrastructure:
+
+* PostgreSQL
+* Redis
+* Kafka
+* S3 Storage
+* Prometheus
+* Grafana
+* OpenTelemetry
+
+---
+
+# Notes
+
+The generated project scaffold is intended as a starting point and does not yet contain the full enterprise implementation described in the architecture documentation. Additional development is required to implement:
+
+* Three.js avatar engine
+* Whisper speech pipeline
+* Translation services
+* Azure Neural Voices
+* Lip-sync engine
+* Authentication system
+* Database migrations
+* Monitoring stack
+* Kubernetes manifests
+
+These components should be developed incrementally following the architecture roadmap.
+
+
+
 This is a starter project containing:
 
 React + Vite setup
